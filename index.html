@@ -51,19 +51,31 @@
 </head>
 <body>
   <div class="card">
-    <h2>💸 Work Time Converter</h2><input id="salary" type="number" placeholder="monthly income (Rp)" />
-<input id="days" type="number" placeholder="working days" />
-<input id="price" type="number" placeholder="price of goods (Rp)" />
+    <h2>💸 Work Time Converter</h2>
 
-<button onclick="calculate()">Hitung</button>
+    <input id="salary" type="text" placeholder="monthly income (Rp)" oninput="formatNumber(this)" />
+    <input id="days" type="number" placeholder="working days" />
+    <input id="price" type="text" placeholder="price of goods (Rp)" oninput="formatNumber(this)" />
 
-<div class="result" id="result"></div>
+    <button onclick="calculate()">Hitung</button>
 
-  </div>  <script>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function formatNumber(input) {
+      let value = input.value.replace(/[^0-9]/g, '');
+      input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function parseNumber(value) {
+      return parseFloat(value.replace(/\./g, '')) || 0;
+    }
+
     function calculate() {
-      const salary = parseFloat(document.getElementById('salary').value);
+      const salary = parseNumber(document.getElementById('salary').value);
       const days = parseFloat(document.getElementById('days').value);
-      const price = parseFloat(document.getElementById('price').value);
+      const price = parseNumber(document.getElementById('price').value);
 
       if (!salary || !days || !price) {
         document.getElementById('result').innerText = 'isi semua dulu lah';
@@ -77,10 +89,11 @@
       const m = Math.round((hours - h) * 60);
 
       document.getElementById('result').innerHTML = `
-        🧾 daily income: Rp ${perDay.toLocaleString()}<br>
+        🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
         ⏳ working time: ${h} jam ${m} minute<br>
         💀 equals to ${dayNeeded.toFixed(2)} working day
       `;
     }
-  </script></body>
+  </script>
+</body>
 </html>
