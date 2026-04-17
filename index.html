@@ -51,9 +51,9 @@
 </head>
 <body>
   <div class="card">
-    <h2>💸 Work Time Converter</h2><input id="salary" type="number" placeholder="Gaji per bulan (Rp)" />
-<input id="days" type="number" placeholder="Hari kerja per bulan" />
-<input id="price" type="number" placeholder="Harga barang (Rp)" />
+    <h2>💸 Work Time Converter</h2><input id="salary" type="number" placeholder="monthly income (Rp)" />
+<input id="days" type="number" placeholder="working days" />
+<input id="price" type="number" placeholder="price of goods (Rp)" />
 
 <button onclick="calculate()">Hitung</button>
 
@@ -66,7 +66,7 @@
       const price = parseFloat(document.getElementById('price').value);
 
       if (!salary || !days || !price) {
-        document.getElementById('result').innerText = 'Isi semua field dulu 😭';
+        document.getElementById('result').innerText = 'isi semua dulu lah';
         return;
       }
 
@@ -77,9 +77,9 @@
       const m = Math.round((hours - h) * 60);
 
       document.getElementById('result').innerHTML = `
-        🧾 Gaji per hari: Rp ${perDay.toLocaleString()}<br>
-        ⏳ Waktu kerja: ${h} jam ${m} menit<br>
-        💀 Setara ${dayNeeded.toFixed(2)} hari kerja
+        🧾 daily income: Rp ${perDay.toLocaleString()}<br>
+        ⏳ working time: ${h} jam ${m} minute<br>
+        💀 equals to ${dayNeeded.toFixed(2)} working day
       `;
     }
   </script></body>
