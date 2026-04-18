@@ -32,16 +32,6 @@
       border-radius: 8px;
       border: none;
     }
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      background: #38bdf8;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
     .result {
       margin-top: 16px;
       font-size: 14px;
@@ -95,7 +85,6 @@
       const hoursPerDay = parseFloat(document.getElementById('hoursPerDay').value) || 9;
       const price = parseNumber(document.getElementById('price').value);
 
-      // save ke localStorage
       localStorage.setItem('salary', document.getElementById('salary').value);
       localStorage.setItem('days', days);
       localStorage.setItem('hoursPerDay', hoursPerDay);
@@ -117,17 +106,24 @@
       const percent = (price / salary) * 100;
       const warteg = Math.floor(price / 15000);
 
+      const dayNeeded = price / perDay;
+
+      // convert ke bulan + hari
+      const months = Math.floor(dayNeeded / days);
+      const remainingDays = Math.round(dayNeeded % days);
+
       document.getElementById('result').innerHTML = `
         🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
         ⏳ working time: ${h} hour ${m} minute<br>
         💀 ${percent.toFixed(2)}% of your salary<br>
-        setara ${warteg}x makan warteg..
+        🍜 setara ${warteg}x makan warteg<br>
+        📅 setara ${dayNeeded.toFixed(2)} hari kerja<br>
+        🗓️ atau ${months} bulan ${remainingDays} hari kerja
       `;
 
       document.getElementById('barFill').style.width = percent + '%';
     }
 
-    // load data dari localStorage
     window.onload = function() {
       if (localStorage.getItem('salary')) {
         document.getElementById('salary').value = localStorage.getItem('salary');
