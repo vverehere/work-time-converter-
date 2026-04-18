@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Work Time Converter</title>
@@ -20,6 +19,11 @@
       border-radius: 16px;
       width: 300px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.4);
     }
     h2 {
       margin-bottom: 16px;
@@ -31,11 +35,34 @@
       margin-bottom: 12px;
       border-radius: 8px;
       border: none;
+      transition: box-shadow 0.2s ease;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #38bdf8;
     }
     .result {
       margin-top: 16px;
       font-size: 14px;
       line-height: 1.5;
+    }
+    .details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .details.show {
+      max-height: 200px;
+    }
+    .toggle-btn {
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #334155;
+      color: #e2e8f0;
+      cursor: pointer;
+      font-size: 12px;
     }
     .bar {
       height: 10px;
@@ -48,23 +75,25 @@
       height: 100%;
       background: #38bdf8;
       width: 0%;
+      transition: width 0.5s ease, background 0.3s ease;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>💸 Work-Time! Converter</h2>
+    <h2>💸 Work-Time! Converter</h2><input id="salary" type="text" placeholder="monthly income (Rp)" oninput="handleInput(this)" />
+<input id="days" type="number" placeholder="working days" oninput="calculate()" />
+<input id="hoursPerDay" type="number" placeholder="working hours/day (ex: 9)" oninput="calculate()" />
+<input id="price" type="text" placeholder="price of goods (Rp)" oninput="handleInput(this)" />
 
-    <input id="salary" type="text" placeholder="monthly income (Rp)" oninput="handleInput(this)" />
-    <input id="days" type="number" placeholder="working days" oninput="calculate()" />
-    <input id="hoursPerDay" type="number" placeholder="working hours/day (ex: 9)" oninput="calculate()" />
-    <input id="price" type="text" placeholder="price of goods (Rp)" oninput="handleInput(this)" />
+<div class="result" id="result"></div>
 
-    <div class="result" id="result"></div>
-    <div class="bar"><div class="fill" id="barFill"></div></div>
-  </div>
+<button class="toggle-btn" onclick="toggleDetails()">Show Details</button>
+<div class="details" id="details"></div>
 
-  <script>
+<div class="bar"><div class="fill" id="barFill"></div></div>
+
+  </div>  <script>
     function formatNumber(input) {
       let value = input.value.replace(/[^0-9]/g, '');
       input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -77,6 +106,11 @@
     function handleInput(input) {
       formatNumber(input);
       calculate();
+    }
+
+    function toggleDetails() {
+      const el = document.getElementById('details');
+      el.classList.toggle('show');
     }
 
     function calculate() {
@@ -92,6 +126,7 @@
 
       if (!salary || !days || !price) {
         document.getElementById('result').innerText = '';
+        document.getElementById('details').innerHTML = '';
         document.getElementById('barFill').style.width = '0%';
         return;
       }
@@ -107,21 +142,28 @@
       const warteg = Math.floor(price / 15000);
 
       const dayNeeded = price / perDay;
-
-      // convert ke bulan + hari
       const months = Math.floor(dayNeeded / days);
       const remainingDays = Math.round(dayNeeded % days);
 
+      // main result (simple)
       document.getElementById('result').innerHTML = `
-        🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
-        ⏳ working time: ${h} hour ${m} minute<br>
-        💀 ${percent.toFixed(2)}% of your salary<br>
-        🍜 setara ${warteg}x makan warteg<br>
-        📅 setara ${dayNeeded.toFixed(2)} hari kerja<br>
-        🗓️ atau ${months} bulan ${remainingDays} hari kerja
+        ⏳ ${h} hour ${m} minute
       `;
 
-      document.getElementById('barFill').style.width = percent + '%';
+      // detailed breakdown
+      document.getElementById('details').innerHTML = `
+        🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
+        💀 ${percent.toFixed(2)}% of your salary<br>
+        🗓️ ${months} bulan ${remainingDays} hari kerja
+        🍜 setara ${warteg}x makan warteg<br>
+      `;
+
+      const bar = document.getElementById('barFill');
+      bar.style.width = percent + '%';
+
+      if (percent < 5) bar.style.background = '#38bdf8';
+      else if (percent < 15) bar.style.background = '#facc15';
+      else bar.style.background = '#ef4444';
     }
 
     window.onload = function() {
@@ -133,6 +175,5 @@
         calculate();
       }
     }
-  </script>
-</body>
+  </script></body>
 </html>
