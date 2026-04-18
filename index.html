@@ -51,10 +51,11 @@
 </head>
 <body>
   <div class="card">
-    <h2>💸 Work-Time Converter</h2>
+    <h2>💸 Work Time Converter</h2>
 
     <input id="salary" type="text" placeholder="monthly income (Rp)" oninput="formatNumber(this)" />
     <input id="days" type="number" placeholder="working days" />
+    <input id="hoursPerDay" type="number" placeholder="working hours per day (ex: 9)" />
     <input id="price" type="text" placeholder="price of goods (Rp)" oninput="formatNumber(this)" />
 
     <button onclick="calculate()">Hitung</button>
@@ -75,6 +76,7 @@
     function calculate() {
       const salary = parseNumber(document.getElementById('salary').value);
       const days = parseFloat(document.getElementById('days').value);
+      const hoursPerDay = parseFloat(document.getElementById('hoursPerDay').value) || 9;
       const price = parseNumber(document.getElementById('price').value);
 
       if (!salary || !days || !price) {
@@ -83,17 +85,21 @@
       }
 
       const perDay = salary / days;
-      const dayNeeded = price / perDay;
-      const hours = dayNeeded * 24;
+      const perHour = perDay / hoursPerDay;
+      const hours = price / perHour;
+
       const h = Math.floor(hours);
       const m = Math.round((hours - h) * 60);
 
       document.getElementById('result').innerHTML = `
         🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
         ⏳ working time: ${h} hour ${m} minute<br>
-        💀 equals to ${dayNeeded.toFixed(2)} working day
+        💀 equals to ${(hours / hoursPerDay).toFixed(2)} working day
       `;
     }
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>
