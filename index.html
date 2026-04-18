@@ -1,180 +1,274 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Work Time Converter</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .card {
-      background: #1e293b;
-      padding: 24px;
-      border-radius: 16px;
-      width: 300px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.4);
-    }
-    h2 {
-      margin-bottom: 16px;
-      font-size: 20px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: none;
-      transition: box-shadow 0.2s ease;
-    }
-    input:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px #38bdf8;
-    }
-    .result {
-      margin-top: 16px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-    }
-    .details.show {
-      max-height: 200px;
-    }
-    .toggle-btn {
-      margin-top: 10px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      background: #334155;
-      color: #e2e8f0;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .bar {
-      height: 10px;
-      background: #334155;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-    .fill {
-      height: 100%;
-      background: #38bdf8;
-      width: 0%;
-      transition: width 0.5s ease, background 0.3s ease;
-    }
-  </style>
-</head>
-<body>
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Work Reality App</title><style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  display: flex;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: #e2e8f0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: rgba(15,23,42,0.9);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  height: 100vh;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+  position: absolute;
+}
+
+.menu-toggle {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #1e293b;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+}
+
+.sidebar button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #1e293b;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar button:hover {
+  background: #334155;
+  transform: translateX(4px);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(30,41,59,0.85);
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  border-radius: 20px;
+  width: 340px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #0f172a;
+  color: white;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #38bdf8;
+}
+
+button.primary {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #38bdf8;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+@media (max-width: 768px) {
+  .menu-toggle { display: block; }
+  .sidebar { position: absolute; z-index: 10; }
+}
+</style></head><body><button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="sidebar" id="sidebar">
+  <h3>⚡ Reality</h3>
+  <button onclick="showPage('calc')">💸 Calculator</button>
+  <button onclick="showPage('cart')">🛒 Cart</button>
+  <button onclick="showPage('goal')">🎯 Goal</button>
+  <button onclick="showPage('decide')">🎲 Decide</button>
+</div><div class="main"><div id="calc" class="page active">
   <div class="card">
-    <h2>💸 Work-Time! Converter</h2><input id="salary" type="text" placeholder="monthly income (Rp)" oninput="handleInput(this)" />
-<input id="days" type="number" placeholder="working days" oninput="calculate()" />
-<input id="hoursPerDay" type="number" placeholder="working hours/day (ex: 9)" oninput="calculate()" />
-<input id="price" type="text" placeholder="price of goods (Rp)" oninput="handleInput(this)" />
+    <h3>Work Time</h3>
+    <input id="salary" placeholder="salary (Rp)" oninput="calc()">
+    <input id="days" placeholder="working days" oninput="calc()">
+    <input id="price" placeholder="price" oninput="calc()">
+    <div class="result" id="calcResult"></div>
+  </div>
+</div><div id="cart" class="page">
+  <div class="card">
+    <h3>Cart Reality</h3>
+    <input id="cartPrice" placeholder="item price">
+    <button class="primary" onclick="addItem()">Add Item</button>
+    <div id="list"></div>
+    <div id="cartResult" class="result"></div>
+  </div>
+</div><div id="goal" class="page">
+  <div class="card">
+    <h3>Goal Impact</h3>
+    <input id="goalTarget" placeholder="target">
+    <input id="goalPrice" placeholder="item price">
+    <button class="primary" onclick="calcGoal()">Check Impact</button>
+    <div id="goalResult" class="result"></div>
+  </div>
+</div><div id="decide" class="page">
+  <div class="card">
+    <h3>Should I Buy?</h3>
+    <button class="primary" onclick="decide()">DECIDE</button>
+    <div id="decision" class="result"></div>
+  </div>
+</div></div><script>
+function formatRupiah(num) {
+  return 'Rp ' + num.toLocaleString('id-ID');
+}
 
-<div class="result" id="result"></div>
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('hidden');
+}
 
-<button class="toggle-btn" onclick="toggleDetails()">Show Details</button>
-<div class="details" id="details"></div>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-<div class="bar"><div class="fill" id="barFill"></div></div>
+function save(key, value) {
+  localStorage.setItem(key, value);
+}
 
-  </div>  <script>
-    function formatNumber(input) {
-      let value = input.value.replace(/[^0-9]/g, '');
-      input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
+function load(key) {
+  return localStorage.getItem(key);
+}
 
-    function parseNumber(value) {
-      return parseFloat(value.replace(/\./g, '')) || 0;
-    }
+function calc() {
+  const salary = parseFloat(document.getElementById('salary').value);
+  const days = parseFloat(document.getElementById('days').value);
+  const price = parseFloat(document.getElementById('price').value);
 
-    function handleInput(input) {
-      formatNumber(input);
-      calculate();
-    }
+  save('salary', salary);
+  save('days', days);
 
-    function toggleDetails() {
-      const el = document.getElementById('details');
-      el.classList.toggle('show');
-    }
+  if (!salary || !days || !price) return;
 
-    function calculate() {
-      const salary = parseNumber(document.getElementById('salary').value);
-      const days = parseFloat(document.getElementById('days').value);
-      const hoursPerDay = parseFloat(document.getElementById('hoursPerDay').value) || 9;
-      const price = parseNumber(document.getElementById('price').value);
+  const perDay = salary/days;
+  const hours = (price/perDay)*8;
+  const percent = (price/salary)*100;
 
-      localStorage.setItem('salary', document.getElementById('salary').value);
-      localStorage.setItem('days', days);
-      localStorage.setItem('hoursPerDay', hoursPerDay);
-      localStorage.setItem('price', document.getElementById('price').value);
+  let badge = "";
+  if (percent < 5) badge = "🟢 santai";
+  else if (percent < 15) badge = "🟡 masih ok";
+  else badge = "seriuss??";
 
-      if (!salary || !days || !price) {
-        document.getElementById('result').innerText = '';
-        document.getElementById('details').innerHTML = '';
-        document.getElementById('barFill').style.width = '0%';
-        return;
-      }
+  document.getElementById('calcResult').innerHTML = `
+    ⏳ ${hours.toFixed(1)} jam kerja<br>
+    💀 ${percent.toFixed(1)}% gaji<br>
+    💸 ${formatRupiah(price)}<br>
+    <span class="badge">${badge}</span>
+  `;
+}
 
-      const perDay = salary / days;
-      const perHour = perDay / hoursPerDay;
-      const hours = price / perHour;
+let cart=[];
+function addItem(){
+  const price=parseFloat(document.getElementById('cartPrice').value);
+  if(!price) return;
+  cart.push(price);
+  renderCart();
+}
 
-      const h = Math.floor(hours);
-      const m = Math.round((hours - h) * 60);
+function renderCart(){
+  let total=cart.reduce((a,b)=>a+b,0);
+  document.getElementById('list').innerHTML = cart.map(i=>`<div>${formatRupiah(i)}</div>`).join('');
 
-      const percent = (price / salary) * 100;
-      const warteg = Math.floor(price / 15000);
+  const salary=parseFloat(load('salary'))||1;
+  const days=parseFloat(load('days'))||1;
 
-      const dayNeeded = price / perDay;
-      const months = Math.floor(dayNeeded / days);
-      const remainingDays = Math.round(dayNeeded % days);
+  const perDay=salary/days;
+  const hours=(total/perDay)*8;
 
-      // main result (simple)
-      document.getElementById('result').innerHTML = `
-        ⏳ ${h} hour ${m} minute
-      `;
+  document.getElementById('cartResult').innerText=`Total: ${formatRupiah(total)} (~${hours.toFixed(1)} jam hidup 💀)`;
+}
 
-      // detailed breakdown
-      document.getElementById('details').innerHTML = `
-        🧾 daily income: Rp ${perDay.toLocaleString('id-ID')}<br>
-        💀 ${percent.toFixed(2)}% of your salary<br>
-        🗓️ ${months} month ${remainingDays} working day
-        
-        setara ${warteg}x makan warteg<br>..
-      `;
+function calcGoal(){
+  const target=parseFloat(document.getElementById('goalTarget').value);
+  const price=parseFloat(document.getElementById('goalPrice').value);
+  const salary=parseFloat(load('salary'));
+  const days=parseFloat(load('days'));
 
-      const bar = document.getElementById('barFill');
-      bar.style.width = percent + '%';
+  if(!target||!price||!salary||!days) return;
 
-      if (percent < 5) bar.style.background = '#38bdf8';
-      else if (percent < 15) bar.style.background = '#facc15';
-      else bar.style.background = '#ef4444';
-    }
+  const perDay=salary/days;
+  const lostDays=price/perDay;
 
-    window.onload = function() {
-      if (localStorage.getItem('salary')) {
-        document.getElementById('salary').value = localStorage.getItem('salary');
-        document.getElementById('days').value = localStorage.getItem('days');
-        document.getElementById('hoursPerDay').value = localStorage.getItem('hoursPerDay');
-        document.getElementById('price').value = localStorage.getItem('price');
-        calculate();
-      }
-    }
-  </script></body>
+  document.getElementById('goalResult').innerText=`💀 target mundur ${lostDays.toFixed(1)} hari kerja`;
+}
+
+function decide(){
+  const options=[
+    "YES!!",
+    "no..",
+    "tunggu 24 jam",
+    "u cuma laper sih..",
+    "dopamine doang"
+  ];
+
+  const pick=options[Math.floor(Math.random()*options.length)];
+  const el=document.getElementById('decision');
+  el.style.opacity=0;
+  setTimeout(()=>{
+    el.innerText=pick;
+    el.style.opacity=1;
+  },150);
+}
+
+// LOAD
+window.onload = function(){
+  if(load('salary')) document.getElementById('salary').value = load('salary');
+  if(load('days')) document.getElementById('days').value = load('days');
+};
+</script></body>
 </html>
